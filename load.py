@@ -23,7 +23,7 @@ def main():
     passwd = args['p']
     file_path = args['file']
 
-    if(not host or not user or not passwd or not file_path):
+    if(not host or not user or not file_path):
         print '输入参数有误'
         return
 
@@ -37,7 +37,7 @@ def main():
         'port': 3306,
         'user': user,
         'passwd': passwd,
-        'db': 'test',
+        'db': 'mbk_activity',
         'charset': 'utf8'
     }
     conn = MySQLdb.connect(**config)
@@ -75,7 +75,7 @@ def main():
             conn.commit()
             sub_sql = ''
             num = 0
-            print "lines %d" % round
+            print " %d万 lines, time %d 秒 " % ((round/10000),(time.time()-start))
 
     if sub_sql:
         sub_sql = sub_sql.strip(',')
@@ -87,7 +87,7 @@ def main():
     cursor.close()
     conn.close()
     end = time.time() - start
-    print 'total time is :%d' % end
+    print 'total time is :%d 秒' % end
 
 if __name__ == '__main__':
     main()
