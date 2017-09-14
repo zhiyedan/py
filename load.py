@@ -1,8 +1,13 @@
 import MySQLdb
 import time
 
+import sys
+
+
+def main(argv):
+
 start = time.time()
-count = 10000
+count = 2
 
 file_path = '/home/zhiyedan/Desktop/test2'
 
@@ -29,35 +34,40 @@ def add_quotes(item,index):
 
 num = 0
 
-for line in file:
-    item = line.split('\t')
-    if (not item[1].strip() or item[5] == 'NULL' or item[6] == 'NULL'):
-    # if (not item[1].strip() or item[1] == 'NULL' or not item[2].strip() or item[2] == 'NULL'):
-        continue
-    add_quotes(item,[0,1,2,3,10,11])
-    item_str = ",".join(item)
-    validData.append(item_str)
-
-totalLen = len(validData)
-
 sub_sql = ''
 
-while len(validData) > 0 :
-    for j in range(1,count):
-        if len(validData)<=0:
-            break
-        sub_sql = (sub_sql + '(' +validData.pop()).strip('\r\n')+'),'
-    sub_sql =  sub_sql.strip(',')
-#    sql = "insert into mbk_ride17917 (user_id,reg_date,first_order_date,max_order_duration,order_cnt,sum_dist_km,sum_dura_hr,freq_district,max_order_date,max_order_cnt,rushhour_order_cnt,sum_redpacket,first_order_city,sum_order_day) values " + sub_sql
-    sql =  "insert into users (name,age,birthday,grade) values " + sub_sql
+for line in file:
+    item = line.split('\t')
+    # if (not item[1].strip() or item[5] == 'NULL' or item[6] == 'NULL'):
+    if (not item[1].strip() or item[1] == 'NULL' or not item[2].strip() or item[2] == 'NULL'):
+        continue
+    # add_quotes(item,[0,1,2,3,10,11])
+    add_quotes(item,[0,2])
+    item_str = ",".join(item)
+
+    sub_sql = sub_sql + '(' + item_str.strip('\r\n') + '),'
+    print 'sub sql is %s' % sub_sql
+    num += 1
+    if (num == count):
+        sub_sql = sub_sql.strip(',')
+        sql = "insert into users (name,age,birthday,grade) values " + sub_sql
+        print 'sql is :' + sql
+        cursor.execute(sql)
+        conn.commit()
+        sub_sql = ''
+        num = 0
+
+if sub_sql:
+    sub_sql = sub_sql.strip(',')
+    sql = "insert into users (name,age,birthday,grade) values " + sub_sql
     print 'sql is :' + sql
     cursor.execute(sql)
     conn.commit()
-    print 'left '+str(len(validData))+' data, percent :' + str(len(validData)/totalLen) + '%'
-
 
 cursor.close()
 conn.close()
 end = time.time() - start
-print end
+print 'total time is :%d' % end
 
+if __name__ == '__main__':
+    main(sys.argv)
