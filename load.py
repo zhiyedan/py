@@ -30,7 +30,6 @@ def main():
     start = time.time()
     count = 10000
     insert_field = 'user_id,reg_date,first_order_date,first_order_city,max_order_duration,order_cnt,sum_dist_km,sum_dura_hr,sum_order_day,sum_redpacket,freq_district,max_order_date,max_order_cnt,rushhour_order_cnt'
-    # file_path = '/home/zhiyedan/Desktop/test3'
 
     config = {
         'host': host,
@@ -57,20 +56,16 @@ def main():
     for line in file:
         round += 1
         item = line.split('\t')
-        # if (not item[1].strip() or item[5] == 'NULL' or item[6] == 'NULL'):
         if (not item[1].strip() or item[1] == 'NULL' or not item[2].strip() or item[2] == 'NULL' or item[5] == 'NULL' or item[6] == 'NULL'):
             continue
         add_quotes(item,[0,1,2,3,10,11])
-        # add_quotes(item,[0,2])
         item_str = ",".join(item)
 
         sub_sql = sub_sql + '(' + item_str.strip('\r\n') + '),'
-        # print 'sub sql is %s' % sub_sql
         num += 1
         if (num == count):
             sub_sql = sub_sql.strip(',')
             sql = "insert into mbk_ride17917 ("+ insert_field +") values " + sub_sql
-            # print 'sql is :' + sql
             cursor.execute(sql)
             conn.commit()
             sub_sql = ''
@@ -80,7 +75,6 @@ def main():
     if sub_sql:
         sub_sql = sub_sql.strip(',')
         sql = "insert into mbk_ride17917 (" + insert_field + ") values " + sub_sql
-        # print 'sql is :' + sql
         cursor.execute(sql)
         conn.commit()
 
